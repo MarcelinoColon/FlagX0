@@ -11,10 +11,12 @@ namespace FlagX0.Web.Controllers
     public class FlagsController : Controller
     {
         private readonly AddFlagUseCase _addFlagUseCase;
+        private readonly GetFlagsUseCase _getFlagsUseCase;
 
-        public FlagsController(AddFlagUseCase addFlagUseCase)
+        public FlagsController(AddFlagUseCase addFlagUseCase, GetFlagsUseCase getFlagsUseCase)
         {
             _addFlagUseCase = addFlagUseCase;
+            _getFlagsUseCase = getFlagsUseCase;
         }
 
         [HttpGet("create")]
@@ -28,7 +30,19 @@ namespace FlagX0.Web.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            bool isCreated = await _addFlagUseCase.Execute(request.Name, request.IsEnabled, userId);
+            bool isCreated = await _addFlagUseCase.Execute(request.Name, request.IsEnabled);
+
+            return RedirectToAction("Index");
+        }
+        [HttpGet("")]
+        public async Task<IActionResult> Index()
+        {
+            var listFlags = await _getFlagsUseCase.Execute();
+
+            return View(new FlagIndexViewModel()
+            {
+                Flags = listFlags
+            });
         }
     }
 }

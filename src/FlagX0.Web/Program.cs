@@ -17,6 +17,7 @@ builder.Services.AddControllersWithViews();
 
 //Use Cases
 builder.Services.AddScoped<AddFlagUseCase>();
+builder.Services.AddScoped<GetFlagsUseCase>();
 
 
 var app = builder.Build();
